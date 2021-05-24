@@ -35,3 +35,19 @@ data "aws_ami" "ami" {
 provider "aws" {
   region = "us-east-1"
 }
+
+resource "aws_autoscaling_policy" "example" {
+  name                   = "sample"
+  adjustment_type        = "ChangeInCapacity"
+  policy_type            = "TargetTrackingScaling"
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  estimated_instance_warmup = "120"
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 40.0
+  }
+}
